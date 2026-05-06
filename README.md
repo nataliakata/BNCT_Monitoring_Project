@@ -1,2 +1,2 @@
 # BNCT_Monitoring_Project
-This project leads to the invention of a monitoring element in BNCT cancer therapy. Project is conducted by a faculty of Pysics, Astronomy and Applied Computer Science of Jagiellonian University.
+This project leads to the development of a prototype device for monitoring in BNCT cancer therapy. Project is conducted by a research group at the Faculty of Physics, Astronomy and Applied Computer Science of Jagiellonian University.
