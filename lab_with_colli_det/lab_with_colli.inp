@@ -1,0 +1,895 @@
+$we are here
+
+set: %qual%[200]
+$the switch turns "on" or "off" t-tracks for flux analysis 
+set: %switch%[off]
+$ GRAPHIC OUTPUT
+set: %switch2%[off]
+$ GRAPHIC OUTPUT
+set: %switch3%[off]
+$ GRAPHIC OUTPUT
+set: %switch4%[off]
+
+ [ T i t l e ]  
+
+input file for lecture about tally
+
+[ P a r a m e t e r s ]
+ icntl    =           0    # (D=0) 3:ECH 5:NOR 6:SRC 7,8:Check geometry 11:DSH 12:DUMP
+ maxcas   =           50000   # (D=10) number of particles per one batch 20000 
+ maxbch   =           800     # (D=10) number of batches 100 
+ itall    =           1     
+  negs    =           1
+ e-mode   =           2     # 0: sampling mode; 1: adds evaporation;  2: adds also accurate charged particle yields and accurate neutron  energy distribution
+
+  $ istdev = -1 #execute PHITS in restart calculation mode
+set: c41[-1.3] c42[ 8.7] c43[-342.] c44[-341.] c45[292.8] c46[302.8] c47[10] c48[10] c49[1] c50[0]
+set: c1[-35] c2[-33.0] c3[35.01] c4[19.24] c5[11.2] c6[0.32] c7[c2+c6] c8[c4-2*c6] c9[c5-c6] c10[8.8] c11[c7+c10] c12[0.32] c13[c7+c10+c6] c14[c8-c10-c12] c15[12.7] c16[7.0] c18[c7+c15]  
+set: c19[0.01] c20[9.88] c21[c7+c19] c22[c10+c12-0.1] c23[35.0] c24[-20.0] c25[13.0] c26[2.56] c27[2*c26] c28[0.5] c29[c26+c28] c30[c25-c28] c31[c27+2*c28] c33[1.0] c34[-5.8] c35[0.0] 
+set: c36[-13.0] c37[2.0] c38[0.09] c39[c21+c38] c40[c22-2*c38] c51[3.] c52[c30-c51] c53[c31+2*c51] c54[c29+c51]
+
+
+$ c params cant expand beyond the current window
+$ ALL OF THE PARAMETERS ARE FLIPPED BY 90 DEG ROUND Z-AXIS SO (X,Y,Z) IS NOW (Y,-X,Z), SO GOOD LUCK DEBUGGING
+$parameters:
+$   manipulating x0, y0, z0 - c1, c2, c3 will move everything
+$   base_outer: x0, y0, z0 - c1, c2, c3; h (18.6 + 2*0.32 = 18.6 + 0.64 = 19.24) -  c4; 
+$   radius_outer: (21.6/2 + 0.32 = 10.8 + 0.32 = 11.12) - c5; thickness: t - c6;
+$   ure_nt_rd: d30;
+$   base_inner: x0, y0, z0 - c1, c7, c3; h - c8; 
+$   rod_secton: x0, y0, z0 - c1, c7, c3; h - c10;
+$   inbetween: x0, y0, z0 - c1, c11, c3; h - c12;
+$   sphere_sect: x0, y0, z0 - c1, c13, c3; h - c14;
+$   sphere_dist_from_inner_base: c15; mother_sphere_radius: c16; mother_h: c18; thickness of walls in spheres/ rods: c38
+$ 
+$ LaBr3: 
+$y - c23, z - c24, x - c25, r - c26, vec(x) - c27; 
+$ Al: 
+$x - c30, vec(x) - c31 r - c29, thickness - c62;
+$ collimator
+
+$ source param:
+$ distance: c36 (x), radius c37
+
+$THE PROGRAM STOPS READNG LINES AT COL. 200
+[ S o u r c e ]
+   s-type =   1               # mono-energetic axial source
+       z0 =   35.01           # minimum position of z-axis [cm]
+       z1 =   35.01           # maximum position of z-axis [cm]
+	   x0 =   -4.12
+	   y0 =   30.95
+       r0 =   0.           # radius [cm]
+       dir =   all           #D:1.0 z-direction of beam [cosine] all
+       e0 =   14.0          # energy of beam [MeV/u]
+     proj =  neutron            # kind of incident nucleus
+
+[ M a t e r i a l ]
+$ Stal 7.9 g/cm3
+mat[1]    24000 -0.190 $ Cr 
+          25055 -0.020 $ Mn 
+          26000 -0.695 $ Fe 
+          28000 -0.095 $ Ni
+mat[2]                 $ Pb
+          82000   1.0
+mat[3]   6000 -0.000124 $ C 
+         7014 -0.755268 $ N 
+         8016 -0.231781 $ O 
+         18000 -0.012827 $ Ar
+
+mat[4]   1001 -0.148605 $paraffin
+         6012 -0.851395
+
+mat[5]   1001 -0.022100 $concrete
+         6012 -0.002484 
+         8016 -0.574930 
+         11023 -0.015208 
+         12000 -0.001266 
+         13027 -0.019953 
+         14000 -0.304627 
+         19000 -0.010045 
+         20000 -0.042951 
+         26000 -0.006435
+mat[6]   1002  2.        $Heavy Water
+         8016  1.
+mat[7]   74000 -1.000000 $ Tungsten density=19.3
+mat[8]   42000 -1.000000 $ Mo density=10.2
+mat[9]   13027 -1.000000 $ Al desity=2.6989
+mat[10]  3000 -0.267585  $LiF density=2.635
+         9000 -0.732415
+mat[11]  1001 -0.117     $ Borated PE 5 percent SWX-201, density 1.08 (0.930)
+         5010 -0.040000
+         5011 -0.010000
+         6000 -0.833	
+mat[12]	 12000 -0.010000 $Stop aluminium 6061-O, 2.7 g/cm3
+		 13027 -0.972000
+		 14000 -0.006000
+		 22000 -0.000880
+		 24000 -0.001950
+		 25055 -0.000880
+		 26000 -0.004090
+		 29000 -0.002750
+		 30000 -0.001460
+$ Cd, 8.65 g/cm3		 
+mat[13]	 48000 -1.000000 
+$ Led gestosc 11.35		 
+mat[14]  82000 -1.000000
+$ Wata mineralna 0.12 g/cm3 (sklad sredni z literatury a nie dokladny)
+mat[15]
+	O   -0.412
+    Si  -0.138
+    Ca  -0.093
+    Al  -0.092
+    Mg  -0.058
+    Fe  -0.046
+    Na  -0.010
+    K   -0.006
+    Ti  -0.007
+    P   -0.001
+    S   -0.002
+mat[22]                                                      $Water
+            H         -0.111898
+            O         -0.888102
+mat[23]                                                      $PMMA
+            H         -0.080541
+            O         -0.599846
+            C         -0.319613
+mat[24]                                                      $boron -2.460 
+            H         -0.11186
+            O         -0.88800
+            B         -0.000050
+            Na        -0.000102
+mat[25]                                                      $Lanthanum (III) bromide                                                 
+            57138      0.25
+            35079      0.75
+
+mat[26]                                                      $Aluminium coverage                                                 
+            Al      -1.0
+
+
+[ Mat Name Color ]
+    mat   name      color
+1  steel     red
+2  Lead      gray
+3  air       cyan 
+4  paraffin  yellow
+5  concrete  green
+6  deuter    black
+7  tungsten  brown
+8  molibden  darkgreen
+9  aluminium darkgreen
+10 LiF       red
+11 PE5       darkred
+12 Al6061-O  gray
+13 Cadmium   yellow
+14 Mercury   black
+15 Cotton    white
+22 Water     blue
+23 PMMA      yellow
+24 Isotope   violet
+25 LaBr      pastelcyan
+26 Al-Detect winered
+
+
+[ S u r f a c e ]
+  10  rpp   -160. 230. -367. 200. -452. 454.
+  11  rpp   -159.9 -96.3 -366.9 199.9 -449.9 451.9
+  12  rpp   169.67 203.67 -366.99 199.8 -449.99 451.99
+  13  rpp   -116.29 169.66 -366.98 199.7 427.8 451.8
+  14  rpp   -116.28 169.65 -340. -316. -425.8 427.79
+  15  rpp   -116.27 169.64 -366.97 199.75 -449.9 -425.9
+$ trojkat betonowy 128 cm wysokosci  
+  16  rpp   -116.26 31.74 93.5 199.94 -425.8 427.79
+  30  cz    6.95           
+  31  pz    -0.7
+  32  pz    43.6 
+$ Generator
+$$  40 rpp -9.50 1.27 -6.45 18.95 12.55 32.87
+$$  41 rpp -9.40 1.17 -6.35 18.85 12.45 32.77
+  40 rpp -9.50 1.27 24.5 49.9 20.1 40.42
+  41 rpp -9.40 1.17 24.6 49.8 20. 40.32
+$ WNEKA NA GENERATOR
+ 45 rpp -9.53 5.47 23.3 51.1 17.66 42.66
+$ DETEKTORY
+ 60 rpp c41 c42 c43 c44 c45 c46 $obiekt pokazujacy gdzie jest wirtualny detektor w kierunku y (sterownia)
+ 96 rpp  220.1 221.1 25.95 35.95 30.01 40.01 $ obiekt pokazujacy gdzie jest wirtualny detektor w kierunku x (sufit)
+$ 97 rpp  -1.3 8.7 25.95 35.95 452. 453. $ obiekt pokazujacy gdzie jest wirtualny detektor w kierunku z (przejscie)
+ 97 rpp -96.3 -86.3 c43 c44 c45 c46
+$98 rpp  -1.3 8.7 25.95 35.95 -451. -450. $ obiekt pokazujacy gdzie jest wirtualny detektor w kierunku z (na zewnatrz)
+ 98 rpp 93. 103. c43 c44 c45 c46
+$ OSLONA z POLIETYLENU
+ 51 rpp -9.51 81.27 -50.5 59.9 -54.9 115.42
+C blat stolu
+ 83 rpp -12.23 -9.53 -59.9 59.9 -56.94 143.06
+C Wneka na moderator WAŻNE
+ 84 rpp -12.22 -9.54 21.45 40.45 30.01 40.01
+C Nogi stołu
+ 85 rpp -116.2 -12.24 -39.9 -33.9 117.06 123.06
+ 86 rpp -116.2 -12.24 -39.9 -33.9 -36.94 -30.94 
+ 87 rpp -116.2 -12.24 53.9 59.9 117.06 123.06
+ 88 rpp -116.2 -12.24 53.9 59.9 -36.94 -30.94
+C Rama gorna
+ 89 rpp -18.25 -12.25 -39.9 -33.9 -36.94 123.06 
+ 20 rpp -18.25 -12.25 53.9 59.9 -36.94 123.06
+ 21 rpp -18.25 -12.25 -33.89 53.89 -36.94 -30.94
+ 22 rpp -18.25 -12.25 -33.89 53.89 117.06 123.06
+C Rama dolna
+ 23 rpp -84.25 -78.25 -39.9 -33.9 -36.94 123.06 
+ 24 rpp -84.25 -78.25 53.9 59.9 -36.94 123.06
+ 25 rpp -84.25 -78.25 -33.89 53.89 -36.94 -30.94
+ 26 rpp -84.25 -78.25 -33.89 53.89 117.06 123.06
+C Poprzeczki
+ 27 rpp -116.2 -18.26 -39.9 -33.9 32.36 38.36
+ 28 rpp -116.2 -18.26  53.9 59.9 32.36 38.36
+C system umieszczania probek (grubosc w zcie do zmierzenia)
+$$29 rpp -22.22 -21.72 -13.1 13.1 18.21 36.71
+$$33 rpp -22.23 -21.73 -16.7 16.7 14.81 40.11
+ 29 rpp -37.24 -36.24 17.85 44.05 25.76 44.26
+ 33 rpp -37.23 -36.23 14.25 47.65 22.36 47.66 $deleted from table
+
+C prety (srednica i dlugosc do zmierzenia)
+ 34 RCC -12.24 16.05 24.06 -25. 0. 0. 0.6 $deleted from table
+ 35 RCC -12.24 45.85 24.06 -25. 0. 0. 0.6 $deleted from table
+ 36 RCC -12.24 45.85 45.96 -25 0. 0. 0.6  $deleted from table
+ 37 RCC -12.24 16.05 45.96 -25 0. 0. 0.6  $deleted from table
+C Cd
+$ 38 Rpp -9.511 56.281 -53.56 -48.56 -42.40 88.32
+$ 39 Rpp -9.511 56.282 44.52 49.52 -42.40 88.32
+$ 42 rpp -9.511 56.283 -48.59 19.01 88.33 92.33
+$ 43 rpp -9.511 56.284 -48.58 19.02 -47.41 -42.46
+$ 44 rpp  71.28 71.38 -76.45 19. -57.45 102.87
+$ wneka na Drzwi
+ 46 rpp -96.3 103.7 -339.9 -316.01 247.8 347.8 
+$ Drzwi stal
+ 47 rpp -96.19 103.59 -321.3 -316.0 247.81 347.79 
+$ Wata w drzwiach
+ 48 rpp -96.29 103.69 -321.225 -316.125 247.81 347.79
+$ Szykana prostopadla do sciany
+ 49 rpp -96.3 53.7 -315.9 -214.9 212.8 237.8
+$ Szykana rownolegla do sciany
+ 50 rpp -96.3 53.7 -239.9 -214.9 237.8 314.7
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+ 102   rcc   c2 -c1 c3 c4 0.00 0.00 c5                                     $base_cylider_outer
+ 103   rcc   c7 -c1 c3 c8 0.00 0.00 c9                                     $base_cylider_inner 
+ 104   rcc   c7 -c1 c3 c10 0.00 0.00 c9                                    $rod_section   
+ 105   rcc   c11 -c1 c3 c12 0.00 0.00 c9                                   $inbetween
+ 106   rcc   c13 -c1 c3 c14 0.00 0.00 c9                                   $sphere_sect
+ $ shells
+ 107   s     c18  -(c1+c16*cos(2.0*pi*1/6+pi/6))  (c3+c16*sin(2.0*pi*1/6+pi/6))  0.5*1.27   $sphere1
+ 108   s     c18  -(c1+c16*cos(2.0*pi*2/6+pi/6))  (c3+c16*sin(2.0*pi*2/6+pi/6))  0.5*3.81  $sphere2
+ 109   s     c18  -(c1+c16*cos(2.0*pi*3/6+pi/6))  (c3+c16*sin(2.0*pi*3/6+pi/6))  0.5*3.18    $sphere3
+ 110   s     c18  -(c1+c16*cos(2.0*pi*4/6+pi/6))  (c3+c16*sin(2.0*pi*4/6+pi/6))  0.5*2.54    $sphere4
+ 111   s     c18  -(c1+c16*cos(2.0*pi*5/6+pi/6))  (c3+c16*sin(2.0*pi*5/6+pi/6))  0.5*1.91    $sphere5
+ 112   s     c18  -(c1+c16*cos(2.0*pi*6/6+pi/6))  (c3+c16*sin(2.0*pi*6/6+pi/6))  0.5*1.59  $sphere6
+ 113 rcc     c21 (-c1-0.009*c20) (c3+0.986*c20) c22 0.0 0.0 0.320 $ sectr 2
+ 114 rcc     c21 (-c1+0.089*c20) (c3+0.990*c20) c22 0.0 0.0 0.320 $ sector 2
+ 115 rcc     c21 (-c1-0.106*c20) (c3+0.989*c20) c22 0.0 0.0 0.320 $ sector 2
+ 116 rcc     c21 (-c1+0.326*c20) (c3+0.900*c20) c22 0.0 0.0 0.320 $ sector 2
+ 117 rcc     c21 (-c1+0.230*c20) (c3+0.900*c20) c22 0.0 0.0 0.320 $ sector 2
+ 118 rcc     c21 (-c1+0.135*c20) (c3+0.900*c20) c22 0.0 0.0 0.320 $ sector 2
+ 119 rcc     c21 (-c1+0.040*c20) (c3+0.900*c20) c22 0.0 0.0 0.320 $ sector 2
+ 120 rcc     c21 (-c1-0.058*c20) (c3+0.900*c20) c22 0.0 0.0 0.320 $ sector 2
+ 121 rcc     c21 (-c1-0.152*c20) (c3+0.900*c20) c22 0.0 0.0 0.320 $ sector 2
+ 122 rcc     c21 (-c1-0.247*c20) (c3+0.900*c20) c22 0.0 0.0 0.320 $ sector 2
+ 123 rcc     c21 (-c1-0.344*c20) (c3+0.900*c20) c22 0.0 0.0 0.320 $ sector 2
+ 124 rcc     c21 (-c1+0.373*c20) (c3+0.817*c20) c22 0.0 0.0 0.320 $ sector 2
+ 125 rcc     c21 (-c1+0.278*c20) (c3+0.818*c20) c22 0.0 0.0 0.320 $ sector 2
+ 126 rcc     c21 (-c1+0.183*c20) (c3+0.818*c20) c22 0.0 0.0 0.320 $ sector 2
+ 127 rcc     c21 (-c1+0.086*c20) (c3+0.818*c20) c22 0.0 0.0 0.320 $ sector 2
+ 128 rcc     c21 (-c1-0.009*c20) (c3+0.818*c20) c22 0.0 0.0 0.320 $ sector 2
+ 129 rcc     c21 (-c1-0.104*c20) (c3+0.818*c20) c22 0.0 0.0 0.320 $ sector 2
+ 130 rcc     c21 (-c1-0.200*c20) (c3+0.818*c20) c22 0.0 0.0 0.320 $ sector 2
+ 131 rcc     c21 (-c1-0.296*c20) (c3+0.817*c20) c22 0.0 0.0 0.320 $ sector 2
+ 132 rcc     c21 (-c1-0.391*c20) (c3+0.818*c20) c22 0.0 0.0 0.320 $ sector 2
+ 133 rcc     c21 (-c1-0.556*c20) (c3+0.738*c20) c22 0.0 0.0 0.395 $ sector 1
+ 134 rcc     c21 (-c1+0.326*c20) (c3+0.734*c20) c22 0.0 0.0 0.320 $ sector 2
+ 135 rcc     c21 (-c1+0.040*c20) (c3+0.735*c20) c22 0.0 0.0 0.320 $ sector 2
+ 136 rcc     c21 (-c1-0.057*c20) (c3+0.734*c20) c22 0.0 0.0 0.320 $ sector 2
+ 137 rcc     c21 (-c1-0.152*c20) (c3+0.734*c20) c22 0.0 0.0 0.320 $ sector 2
+ 138 rcc     c21 (-c1+0.230*c20) (c3+0.734*c20) c22 0.0 0.0 0.320 $ sector 2
+ 139 rcc     c21 (-c1+0.134*c20) (c3+0.734*c20) c22 0.0 0.0 0.320 $ sector 2
+ 140 rcc     c21 (-c1-0.247*c20) (c3+0.733*c20) c22 0.0 0.0 0.320 $ sector 2
+ 141 rcc     c21 (-c1-0.344*c20) (c3+0.734*c20) c22 0.0 0.0 0.320 $ sector 2
+ 142 rcc     c21 (-c1+0.278*c20) (c3+0.652*c20) c22 0.0 0.0 0.320 $ sector 2
+ 143 rcc     c21 (-c1+0.183*c20) (c3+0.652*c20) c22 0.0 0.0 0.320 $ sector 2
+ 144 rcc     c21 (-c1+0.086*c20) (c3+0.651*c20) c22 0.0 0.0 0.320 $ sector 2
+ 145 rcc     c21 (-c1-0.009*c20) (c3+0.651*c20) c22 0.0 0.0 0.320 $ sector 2
+ 146 rcc     c21 (-c1-0.104*c20) (c3+0.652*c20) c22 0.0 0.0 0.320 $ sector 2
+ 147 rcc     c21 (-c1-0.201*c20) (c3+0.652*c20) c22 0.0 0.0 0.320 $ sector 2
+ 148 rcc     c21 (-c1-0.296*c20) (c3+0.652*c20) c22 0.0 0.0 0.320 $ sector 2
+ 149 rcc     c21 (-c1-0.493*c20) (c3+0.627*c20) c22 0.0 0.0 0.395 $ sector 1
+ 150 rcc     c21 (-c1-0.621*c20) (c3+0.627*c20) c22 0.0 0.0 0.395 $ sector 1
+ 151 rcc     c21 (-c1-0.748*c20) (c3+0.627*c20) c22 0.0 0.0 0.395 $ sector 1
+ 152 rcc     c21 (-c1+0.721*c20) (c3+0.549*c20) c22 0.0 0.0 0.955 $ sector 3
+ 153 rcc     c21 (-c1+0.466*c20) (c3+0.549*c20) c22 0.0 0.0 0.955 $ sector 3
+ 154 rcc     c21 (-c1+0.230*c20) (c3+0.569*c20) c22 0.0 0.0 0.320 $ sector 2
+ 155 rcc     c21 (-c1+0.135*c20) (c3+0.569*c20) c22 0.0 0.0 0.320 $ sector 2
+ 156 rcc     c21 (-c1+0.039*c20) (c3+0.569*c20) c22 0.0 0.0 0.320 $ sector 2
+ 157 rcc     c21 (-c1-0.058*c20) (c3+0.569*c20) c22 0.0 0.0 0.320 $ sector 2
+ 158 rcc     c21 (-c1-0.152*c20) (c3+0.569*c20) c22 0.0 0.0 0.320 $ sector 2
+ 159 rcc     c21 (-c1-0.248*c20) (c3+0.570*c20) c22 0.0 0.0 0.320 $ sector 2
+ 160 rcc     c21 (-c1-0.429*c20) (c3+0.518*c20) c22 0.0 0.0 0.395 $ sector 1
+ 161 rcc     c21 (-c1-0.556*c20) (c3+0.518*c20) c22 0.0 0.0 0.395 $ sector 1
+ 162 rcc     c21 (-c1-0.684*c20) (c3+0.518*c20) c22 0.0 0.0 0.395 $ sector 1
+ 163 rcc     c21 (-c1-0.811*c20) (c3+0.518*c20) c22 0.0 0.0 0.395 $ sector 1
+ 164 rcc     c21 (-c1+0.183*c20) (c3+0.486*c20) c22 0.0 0.0 0.320 $ sector 2
+ 165 rcc     c21 (-c1+0.087*c20) (c3+0.486*c20) c22 0.0 0.0 0.320 $ sector 2
+ 166 rcc     c21 (-c1-0.008*c20) (c3+0.487*c20) c22 0.0 0.0 0.320 $ sector 2
+ 167 rcc     c21 (-c1-0.104*c20) (c3+0.486*c20) c22 0.0 0.0 0.320 $ sector 2
+ 168 rcc     c21 (-c1-0.200*c20) (c3+0.486*c20) c22 0.0 0.0 0.320 $ sector 2
+ 169 rcc     c21 (-c1-0.365*c20) (c3+0.407*c20) c22 0.0 0.0 0.395 $ sector 1
+ 170 rcc     c21 (-c1-0.493*c20) (c3+0.408*c20) c22 0.0 0.0 0.395 $ sector 1
+ 171 rcc     c21 (-c1-0.621*c20) (c3+0.407*c20) c22 0.0 0.0 0.395 $ sector 1
+ 172 rcc     c21 (-c1-0.748*c20) (c3+0.407*c20) c22 0.0 0.0 0.395 $ sector 1
+ 173 rcc     c21 (-c1-0.875*c20) (c3+0.407*c20) c22 0.0 0.0 0.395 $ sector 1
+ 174 rcc     c21 (-c1+0.135*c20) (c3+0.404*c20) c22 0.0 0.0 0.320 $ sector 2
+ 175 rcc     c21 (-c1+0.039*c20) (c3+0.403*c20) c22 0.0 0.0 0.320 $ sector 2
+ 176 rcc     c21 (-c1-0.058*c20) (c3+0.404*c20) c22 0.0 0.0 0.320 $ sector 2
+ 177 rcc     c21 (-c1-0.152*c20) (c3+0.404*c20) c22 0.0 0.0 0.320 $ sector 2
+ 178 rcc     c21 (-c1+0.849*c20) (c3+0.329*c20) c22 0.0 0.0 0.955 $ sector 3
+ 179 rcc     c21 (-c1+0.594*c20) (c3+0.329*c20) c22 0.0 0.0 0.955 $ sector 3
+ 180 rcc     c21 (-c1+0.339*c20) (c3+0.329*c20) c22 0.0 0.0 0.955 $ sector 3
+ 181 rcc     c21 (-c1+0.087*c20) (c3+0.321*c20) c22 0.0 0.0 0.320 $ sector 2
+ 182 rcc     c21 (-c1-0.009*c20) (c3+0.322*c20) c22 0.0 0.0 0.320 $ sector 2
+ 183 rcc     c21 (-c1-0.104*c20) (c3+0.321*c20) c22 0.0 0.0 0.320 $ sector 2
+ 184 rcc     c21 (-c1-0.301*c20) (c3+0.297*c20) c22 0.0 0.0 0.395 $ sector 1
+ 185 rcc     c21 (-c1-0.429*c20) (c3+0.297*c20) c22 0.0 0.0 0.395 $ sector 1
+ 186 rcc     c21 (-c1-0.556*c20) (c3+0.298*c20) c22 0.0 0.0 0.395 $ sector 1
+ 187 rcc     c21 (-c1-0.684*c20) (c3+0.297*c20) c22 0.0 0.0 0.395 $ sector 1
+ 188 rcc     c21 (-c1-0.811*c20) (c3+0.297*c20) c22 0.0 0.0 0.395 $ sector 1
+ 189 rcc     c21 (-c1-0.938*c20) (c3+0.297*c20) c22 0.0 0.0 0.395 $ sector 1
+ 190 rcc     c21 (-c1+0.039*c20) (c3+0.239*c20) c22 0.0 0.0 0.320 $ sector 2
+ 191 rcc     c21 (-c1-0.058*c20) (c3+0.239*c20) c22 0.0 0.0 0.320 $ sector 2
+ 192 rcc     c21 (-c1-0.237*c20) (c3+0.187*c20) c22 0.0 0.0 0.395 $ sector 1
+ 193 rcc     c21 (-c1-0.365*c20) (c3+0.186*c20) c22 0.0 0.0 0.395 $ sector 1
+ 194 rcc     c21 (-c1-0.494*c20) (c3+0.186*c20) c22 0.0 0.0 0.395 $ sector 1
+ 195 rcc     c21 (-c1-0.621*c20) (c3+0.187*c20) c22 0.0 0.0 0.395 $ sector 1
+ 196 rcc     c21 (-c1-0.748*c20) (c3+0.187*c20) c22 0.0 0.0 0.395 $ sector 1
+ 197 rcc     c21 (-c1-0.875*c20) (c3+0.186*c20) c22 0.0 0.0 0.395 $ sector 1
+ 198 rcc     c21 (-c1+0.721*c20) (c3+0.108*c20) c22 0.0 0.0 0.955 $ sector 3
+ 199 rcc     c21 (-c1+0.466*c20) (c3+0.109*c20) c22 0.0 0.0 0.955 $ sector 3
+ 200 rcc     c21 (-c1+0.212*c20) (c3+0.108*c20) c22 0.0 0.0 0.955 $ sector 3
+ 201 rcc     c21 (-c1-0.009*c20) (c3+0.156*c20) c22 0.0 0.0 0.320 $ sector 2
+ 202 rcc     c21 (-c1-0.174*c20) (c3+0.076*c20) c22 0.0 0.0 0.395 $ sector 1
+ 203 rcc     c21 (-c1-0.302*c20) (c3+0.076*c20) c22 0.0 0.0 0.395 $ sector 1
+ 204 rcc     c21 (-c1-0.429*c20) (c3+0.077*c20) c22 0.0 0.0 0.395 $ sector 1
+ 205 rcc     c21 (-c1-0.556*c20) (c3+0.076*c20) c22 0.0 0.0 0.395 $ sector 1
+ 206 rcc     c21 (-c1-0.684*c20) (c3+0.076*c20) c22 0.0 0.0 0.395 $ sector 1
+ 207 rcc     c21 (-c1-0.811*c20) (c3+0.076*c20) c22 0.0 0.0 0.395 $ sector 1
+ 208 rcc     c21 (-c1-0.938*c20) (c3+0.077*c20) c22 0.0 0.0 0.395 $ sector 1
+ 209 rcc     c21 (-c1-0.188*c20) (c3-0.122*c20) c22 0.0 0.0 0.475 $ sector 6
+ 210 rcc     c21 (-c1-0.348*c20) (c3-0.122*c20) c22 0.0 0.0 0.475 $ sector 6
+ 211 rcc     c21 (-c1-0.507*c20) (c3-0.122*c20) c22 0.0 0.0 0.475 $ sector 6
+ 212 rcc     c21 (-c1-0.666*c20) (c3-0.122*c20) c22 0.0 0.0 0.475 $ sector 6
+ 213 rcc     c21 (-c1-0.825*c20) (c3-0.123*c20) c22 0.0 0.0 0.475 $ sector 6
+ 214 rcc     c21 (-c1-0.985*c20) (c3-0.122*c20) c22 0.0 0.0 0.475 $ sector 6
+ 215 rcc     c21 (-c1+0.894*c20) (c3-0.153*c20) c22 0.0 0.0 0.635 $ sector 4
+ 216 rcc     c21 (-c1+0.671*c20) (c3-0.153*c20) c22 0.0 0.0 0.635 $ sector 4
+ 217 rcc     c21 (-c1+0.448*c20) (c3-0.153*c20) c22 0.0 0.0 0.635 $ sector 4
+ 218 rcc     c21 (-c1+0.226*c20) (c3-0.153*c20) c22 0.0 0.0 0.635 $ sector 4
+ 219 rcc     c21 (-c1-0.009*c20) (c3-0.241*c20) c22 0.0 0.0 0.555 $ sector 5
+ 220 rcc     c21 (-c1-0.268*c20) (c3-0.260*c20) c22 0.0 0.0 0.475 $ sector 6
+ 221 rcc     c21 (-c1-0.427*c20) (c3-0.260*c20) c22 0.0 0.0 0.475 $ sector 6
+ 222 rcc     c21 (-c1-0.586*c20) (c3-0.259*c20) c22 0.0 0.0 0.475 $ sector 6
+ 223 rcc     c21 (-c1-0.746*c20) (c3-0.260*c20) c22 0.0 0.0 0.475 $ sector 6
+ 224 rcc     c21 (-c1-0.905*c20) (c3-0.260*c20) c22 0.0 0.0 0.475 $ sector 6
+ 225 rcc     c21 (-c1+0.783*c20) (c3-0.346*c20) c22 0.0 0.0 0.635 $ sector 4
+ 226 rcc     c21 (-c1+0.560*c20) (c3-0.347*c20) c22 0.0 0.0 0.635 $ sector 4
+ 227 rcc     c21 (-c1+0.337*c20) (c3-0.346*c20) c22 0.0 0.0 0.635 $ sector 4
+ 228 rcc     c21 (-c1+0.087*c20) (c3-0.406*c20) c22 0.0 0.0 0.555 $ sector 5
+ 229 rcc     c21 (-c1-0.105*c20) (c3-0.406*c20) c22 0.0 0.0 0.555 $ sector 5
+ 230 rcc     c21 (-c1-0.347*c20) (c3-0.397*c20) c22 0.0 0.0 0.475 $ sector 6
+ 231 rcc     c21 (-c1-0.506*c20) (c3-0.397*c20) c22 0.0 0.0 0.475 $ sector 6
+ 232 rcc     c21 (-c1-0.665*c20) (c3-0.397*c20) c22 0.0 0.0 0.475 $ sector 6
+ 233 rcc     c21 (-c1-0.825*c20) (c3-0.397*c20) c22 0.0 0.0 0.475 $ sector 6
+ 234 rcc     c21 (-c1+0.671*c20) (c3-0.539*c20) c22 0.0 0.0 0.635 $ sector 4
+ 235 rcc     c21 (-c1+0.449*c20) (c3-0.539*c20) c22 0.0 0.0 0.635 $ sector 4
+ 236 rcc     c21 (-c1-0.427*c20) (c3-0.535*c20) c22 0.0 0.0 0.475 $ sector 6
+ 237 rcc     c21 (-c1-0.586*c20) (c3-0.535*c20) c22 0.0 0.0 0.475 $ sector 6
+ 238 rcc     c21 (-c1-0.745*c20) (c3-0.535*c20) c22 0.0 0.0 0.475 $ sector 6
+ 239 rcc     c21 (-c1+0.182*c20) (c3-0.572*c20) c22 0.0 0.0 0.555 $ sector 5
+ 240 rcc     c21 (-c1-0.009*c20) (c3-0.572*c20) c22 0.0 0.0 0.555 $ sector 5
+ 241 rcc     c21 (-c1-0.200*c20) (c3-0.572*c20) c22 0.0 0.0 0.555 $ sector 5
+ 242 rcc     c21 (-c1-0.507*c20) (c3-0.673*c20) c22 0.0 0.0 0.475 $ sector 6
+ 243 rcc     c21 (-c1-0.666*c20) (c3-0.673*c20) c22 0.0 0.0 0.475 $ sector 6
+ 244 rcc     c21 (-c1+0.560*c20) (c3-0.732*c20) c22 0.0 0.0 0.635 $ sector 4
+ 245 rcc     c21 (-c1+0.278*c20) (c3-0.737*c20) c22 0.0 0.0 0.555 $ sector 5
+ 246 rcc     c21 (-c1+0.087*c20) (c3-0.737*c20) c22 0.0 0.0 0.555 $ sector 5
+ 247 rcc     c21 (-c1-0.105*c20) (c3-0.737*c20) c22 0.0 0.0 0.555 $ sector 5
+ 248 rcc     c21 (-c1-0.296*c20) (c3-0.737*c20) c22 0.0 0.0 0.555 $ sector 5
+ 249 rcc     c21 (-c1-0.586*c20) (c3-0.810*c20) c22 0.0 0.0 0.475 $ sector 6
+ 250 rcc     c21 (-c1+0.373*c20) (c3-0.903*c20) c22 0.0 0.0 0.555 $ sector 5
+ 251 rcc     c21 (-c1+0.182*c20) (c3-0.902*c20) c22 0.0 0.0 0.555 $ sector 5
+ 252 rcc     c21 (-c1-0.009*c20) (c3-0.902*c20) c22 0.0 0.0 0.555 $ sector 5
+ 253 rcc     c21 (-c1-0.200*c20) (c3-0.902*c20) c22 0.0 0.0 0.555 $ sector 5
+ 254 rcc     c21 (-c1-0.391*c20) (c3-0.902*c20) c22 0.0 0.0 0.555 $ sector 5
+ 266 rcc     c24 c23 c52 0.0 0.0 c53 c54                         $ detector - collimator
+ 255 rcc     c24 c23 c25 0.0 0.0 c27 c26                         $ detector - crystal
+ 256 rcc     c24 c23 c30 0.0 0.0 c31 c29                         $ detector - aluminium
+ 257  PX     c36                                                 $ source
+ 258  C/X    c18 0.0 c37                                         $ source cut out
+$ innards
+ 259   s      c18 -(c1+c16*cos(2.0*pi*1/6+pi/6))  (c3+c16*sin(2.0*pi*1/6+pi/6))  0.5*1.27-c38    $sphere1
+ 260   s      c18 -(c1+c16*cos(2.0*pi*2/6+pi/6))  (c3+c16*sin(2.0*pi*2/6+pi/6))  0.5*3.81-c38    $sphere2
+ 261   s      c18 -(c1+c16*cos(2.0*pi*3/6+pi/6))  (c3+c16*sin(2.0*pi*3/6+pi/6))  0.5*3.18-c38    $sphere3
+ 262   s      c18 -(c1+c16*cos(2.0*pi*4/6+pi/6))  (c3+c16*sin(2.0*pi*4/6+pi/6))  0.5*2.54-c38    $sphere4
+ 263   s      c18 -(c1+c16*cos(2.0*pi*5/6+pi/6)) (c3+c16*sin(2.0*pi*5/6+pi/6))  0.5*1.91-c38    $sphere5
+ 264   s      c18 -(c1+c16*cos(2.0*pi*6/6+pi/6)) (c3+c16*sin(2.0*pi*6/6+pi/6))  0.5*1.59-c38    $sphere6
+ 407 rcc     (c11+c12)  -(c1+c16*cos(2.0*pi*1/6+pi/6))  (c3+c16*sin(2.0*pi*1/6+pi/6)) (c18-0.5*1.27-(c11+c12)) 0.0 0.0 0.127  $sphere1
+ 408 rcc     (c11+c12)  -(c1+c16*cos(2.0*pi*2/6+pi/6))  (c3+c16*sin(2.0*pi*2/6+pi/6)) (c18-0.5*3.81-(c11+c12)) 0.0 0.0 0.381  $sphere2
+ 409 rcc     (c11+c12)  -(c1+c16*cos(2.0*pi*3/6+pi/6))  (c3+c16*sin(2.0*pi*3/6+pi/6)) (c18-0.5*3.18-(c11+c12)) 0.0 0.0 0.318  $sphere3
+ 410 rcc     (c11+c12)  -(c1+c16*cos(2.0*pi*4/6+pi/6))  (c3+c16*sin(2.0*pi*4/6+pi/6)) (c18-0.5*2.54-(c11+c12)) 0.0 0.0 0.254  $sphere4
+ 411 rcc     (c11+c12)  -(c1+c16*cos(2.0*pi*5/6+pi/6))  (c3+c16*sin(2.0*pi*5/6+pi/6)) (c18-0.5*1.91-(c11+c12)) 0.0 0.0 0.191  $sphere5
+ 412 rcc     (c11+c12)  -(c1+c16*cos(2.0*pi*6/6+pi/6))  (c3+c16*sin(2.0*pi*6/6+pi/6)) (c18-0.5*1.59-(c11+c12)) 0.0 0.0 0.159  $sphere6
+
+
+[ C e l l ]
+ 100   -1              10                                                                                                                                                                     $void
+ 101    3   -0.001205 (-10 : (-46 #549 #550) : (-45 #400) : -29 : -84 : (-60 : -96 : -97 : -98) : -84 : -60 : -41 : -84 : -29) 11 12 13 14 15 16 #201 #400 #520 #522 #549 #550 #110 #522 #501
+        #230 #231 #238 #239 #244 #245 #203 #204 #206 #211 #213 #215 #217 #219 #228 #229 #210
+        #248 #249 #252 #253 #256 #257 #260 #262 #264 #266 #268 #270 $air
+ 110    5   -2.3      (-11 : -12 : -13 : -14 : -15 : -16 : (-49 : -50)) #549 #550 $cement - obudowa całego set up'u
+ 400    1   -7.9       -40 41
+ 501    11  -1.08      -51 41 45 #400 
+ 520    9   -2.6989    -83 84 $table itself
+ 522    12  -2.7      (-85 : -86 : -87 : -88 : -89 : -20 : -21 : -22 : -23 : -24 : -25 : -26 : -27 : -28) #110 #203    $metal table legs A MISSING PARTICLE
+ 549    1   -7.9       -47 #550
+ 550    15  -0.12      -48
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+ 201     23 -1.190     -102 103                                                                                                                                      $base_outer
+ 203     22 -1.000     (-104 : -106) 105 #206 #210 #211 #213 #215 #217 #219 #228 #229                      $filling 
+ 204     23 -1.190     (-105) #206 #210 #211 #213 #215 #217 #219 #228 #229                                      $inbetween 
+ 206     23 -1.190     ((((-107 : -407) 259) : ((-108 : -408) 260) : ((-109 : -409) 261) : ((-110 : -410) 262) : ((-111 : -411) 263) : ((-112 : -412) 264))) $shells
+ 211     23 -1.190     (-118 : -119 : -120 : -121 : -122 : -123 : -124 : -125 : -126 : -127 : -128 : -129 : -130 : -131 : -132 : -133 : -134 : -135 : -136 : -137 : -138 : -139) 
+ 213     23 -1.190     (-142 : -143 : -144 : -145 : -146 : -147 : -148 : -149 : -150 : -151 : -152 : -155 : -156 : -157 : -158 : -159 : -160 : -161 : -162 : -163 : -164 : -165) 
+ 215     23 -1.190     (-168 : -169 : -170 : -171 : -172 : -173 : -174 : -175 : -176 : -177 : -178 : -181 : -182 : -183 : -184 : -185 : -186 : -187 : -188 : -189 : -190 : -191) 
+ 217     23 -1.190     (-194 : -195 : -196 : -197 : -198 : -199 : -200 : -201 : -202 : -203 : -204 : -207 : -208 : -209 : -210 : -211 : -212 : -213 : -214 : -215 : -216 : -217) 
+ 219     23 -1.190     (-220 : -221 : -222 : -223 : -224 : -225 : -226 : -227 : -228 : -229 : -230 : -233 : -234 : -235 : -236 : -237 : -238 : -239 : -240 : -241 : -242 : -243) 
+ 228     23 -1.19      (-141 : -154 : -167 : -180 : -193 : -206 : -219 : -232 : -245 : -140 : -179 : -246 : -247 : -248 : -249 : -250 : -251 : -252 : -253 : -254 : -153 : -166) 
+ 229     23 -1.19      (-192 : -205 : -218 : -231 : -244 : -113 : -114 : -115 : -116 : -117)         
+ 260     2  -11.34     -266  256  trcl = 1
+ 230     25 -5.06      -255       trcl = 1                                                                                                          $detector 
+ 231     26 -2.71       255 -256  trcl = 1 
+$ 261     2  -11.34     -266  256  trcl = 2                                                                                                         $detector covering
+$ 234     25 -5.06      -255       trcl = 2                                                                                                          $detector 
+$ 235     26 -2.71       255 -256  trcl = 2
+ 262     2  -11.34     -266  256  trcl = 3                                                                                                          $detector covering
+ 238     25 -5.06      -255       trcl = 3                                                                                                          $detector
+ 239     26 -2.71       255 -256  trcl = 3
+$ 263     2  -11.34     -266  256  trcl = 4                                                                                                          $detector covering
+$ 242     25 -5.06      -255       trcl = 4                                                                                                          $detector
+$ 243     26 -2.71       255 -256  trcl = 4
+ 264     2  -11.34     -266  256  trcl = 5                                                                                                          $detector covering
+ 244     25 -5.06      -255       trcl = 5                                                                                                          $detector
+ 245     26 -2.71       255 -256  trcl = 5
+$ 265     2  -11.34     -266  256  trcl = 6                                                                                                          $detector covering
+$ 246     25 -5.06      -255       trcl = 6                                                                                                           $detector
+$ 247     26 -2.71       255 -256  trcl = 6
+ 266     2  -11.34     -266  256  trcl = 7 $ czy grubość warstwy zewnętrznej jest ok???         
+ 248     25 -5.06      -255       trcl = 7                                                                                                          $detector 
+ 249     26 -2.71       255 -256  trcl = 7
+$ 267     2  -11.34     -266  256  trcl = 8                                                                                                          $detector covering
+$ 250     25 -5.06      -255       trcl = 8                                                                                                          $detector 
+$ 251     26 -2.71       255 -256  trcl = 8
+ 268     2  -11.34     -266  256  trcl = 9                                                                                                          $detector covering
+ 252     25 -5.06      -255       trcl = 9                                                                                                          $detector
+ 253     26 -2.71       255 -256  trcl = 9
+$ 269     2  -11.34     -266  256  trcl = 10                                                                                                          $detector covering
+$ 254     25 -5.06      -255       trcl = 10                                                                                                          $detector
+$ 255     26 -2.71       255 -256  trcl = 10
+ 270     2  -11.34     -266  256  trcl = 11                                                                                                         $detector covering
+ 256     25 -5.06      -255       trcl = 11                                                                                                         $detector
+ 257     26 -2.71       255 -256  trcl = 11
+$ 271     2  -11.34     -266  256  trcl = 12                                                                                                         $detector covering
+$ 258     25 -5.06      -255       trcl = 12                                                                                                          $detector
+$ 259     26 -2.71       255 -256  trcl = 12 $ czy grubość warstwy zewnętrznej jest ok???                                                                                                        $detector covering                                                    $detector covering
+ 210     24 -1.0     (-259 : -260 : -261 : -262 : -263 : -264)   $innards
+[ T r a n s f o r m ]
+*tr1  0.0 0.0 0.0  c2 -c1 c3  1 -0 0.0 0.0 0.0 0.0 3
+*tr2  0.0 0.0 0.0  c2 -c1 c3  1 -30 0.0 0.0 0.0 0.0 3
+*tr3  0.0 0.0 0.0  c2 -c1 c3  1 -60 0.0 0.0 0.0 0.0 3
+*tr4  0.0 0.0 0.0  c2 -c1 c3  1 -90 0.0 0.0 0.0 0.0 3
+*tr5  0.0 0.0 0.0  c2 -c1 c3  1 -120 0.0 0.0 0.0 0.0 3
+*tr6  0.0 0.0 0.0  c2 -c1 c3  1 -150 0.0 0.0 0.0 0.0 3
+*tr7  0.0 0.0 0.0  c2 -c1 c3  1 -180 0.0 0.0 0.0 0.0 3
+*tr8  0.0 0.0 0.0  c2 -c1 c3  1 -210 0.0 0.0 0.0 0.0 3
+*tr9  0.0 0.0 0.0  c2 -c1 c3  1 -240 0.0 0.0 0.0 0.0 3
+*tr10 0.0 0.0 0.0  c2 -c1 c3  1 -270 0.0 0.0 0.0 0.0 3
+*tr11 0.0 0.0 0.0  c2 -c1 c3  1 -300 0.0 0.0 0.0 0.0 3
+*tr12 0.0 0.0 0.0  c2 -c1 c3  1 -330 0.0 0.0 0.0 0.0 3
+$ 102   rcc   c1 c2 c3 0.00 c4 0.00 c5                                     
+
+[ V o l u m e ]
+    reg      vol      
+    101   6.0854E+07
+    110   3.7362E+07
+    400   6.3923E+01
+    501   8.4107E+05
+    520   3.0628E+04
+    522   2.5918E+04
+    549   1.7232E+03
+    550   5.0342E+04
+    201   3.5525E+02
+    203   2.9083E+03
+    204   5.1395E+01
+    206   6.9112E+00
+    211   4.1885E+01
+    213   3.6322E+01
+    215   6.5205E+01
+    217   9.5451E+01
+    219   8.7341E+01
+    228   1.0337E+02
+    229   2.5356E+01
+    230   7.4608E+01
+    231   1.0550E+02
+    238   7.4608E+01
+    239   1.0550E+02
+    244   7.4608E+01
+    245   1.0550E+02
+    210   3.0804E+01
+
+$FLUENCE TRACKING
+
+[t-track] %switch%
+   mesh = xyz
+   x-type =    2            # x-mesh is linear given bx xmin, xmax and nx
+     xmin =  c1+5     # minimum value of x-mesh points
+     xmax =  c1+7       # maximum value of x-mesh points
+       nx =   1           # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  c2-50      # minimum value of y-mesh points
+     ymax =  c2+50      # maximum value of y-mes    h points
+       ny =   %qual%            # number of y-mes       h points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  c3-50     # minimum value of z-mesh points
+     zmax =  c3+50     # maximum value of z-mesh points
+       nz =   %qual%            # number of z-mesh points
+     axis =   yz            # axis of output
+     file = view_yz_rods.out    # file name of output for the above axis
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     part = neutron 
+     unit =    1            # unit is [1/cm^2/source]
+    gshow =    1
+   epsout =    1
+
+[t-track] %switch%
+   mesh = xyz
+   x-type =    2            # x-mesh is linear given bx xmin, xmax and nx
+     xmin =  c1+13     # minimum value of x-mesh points
+     xmax =  c1+14    # maximum value of x-mesh points
+       nx =   1           # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  c2-50      # minimum value of y-mesh points
+     ymax =  c2+50      # maximum value of y-mes    h points
+       ny =   %qual%            # number of y-mes       h points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  c3-50     # minimum value of z-mesh points
+     zmax =  c3+50     # maximum value of z-mesh points
+       nz =   %qual%            # number of z-mesh points
+     axis =   yz            # axis of output
+     file = view_yz_spheres.out    # file name of output for the above axis
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     part = neutron 
+     unit =    1            # unit is [1/cm^2/source]
+    gshow =    1
+   epsout =    1
+
+[t-track] %switch%
+   mesh = xyz
+   x-type =    2            # x-mesh is linear given bx xmin, xmax and nx
+     xmin =  c1+10     # minimum value of x-mesh points
+     xmax =  c1+11    # maximum value of x-mesh points
+       nx =   1           # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  c2-50      # minimum value of y-mesh points
+     ymax =  c2+50      # maximum value of y-mes    h points
+       ny =   %qual%            # number of y-mes       h points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  c3-50     # minimum value of z-mesh points
+     zmax =  c3+50     # maximum value of z-mesh points
+       nz =   %qual%            # number of z-mesh points
+     axis =   yz            # axis of output
+     file = view_yz_sphere_legs.out    # file name of output for the above axis
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     part = neutron 
+     unit =    1            # unit is [1/cm^2/source]
+    gshow =    1
+   epsout =    1
+
+[t-track] %switch%
+   mesh = xyz
+   x-type =    2            # x-mesh is linear given bx xmin, xmax and nx
+     xmin =  c24-2.00      # minimum value of x-mesh points
+     xmax =  c24+2.00     # maximum value of x-mesh points
+       nx =   1            # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  -c1-50      # minimum value of y-mesh points
+     ymax =  -c1+50      # maximum value of y-mes    h points
+       ny =   %qual%            # number of y-mes       h points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  c3-50     # minimum value of z-mesh points
+     zmax =  c3+50     # maximum value of z-mesh points
+       nz =   %qual%            # number of z-mesh points
+     axis =   yz            # axis of output
+     file = view_yz_detecties.out    # file name of output for the above axis
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     part = neutron 
+     unit =    1            # unit is [1/cm^2/source]
+    gshow =    1
+   epsout =    1
+
+[t-track] %switch%
+   mesh = xyz
+   x-type =    2            # x-mesh is linear given bx xmin, xmax and nx
+     xmin =  c24-2.00      # minimum value of x-mesh points
+     xmax =  c24+2.00     # maximum value of x-mesh points
+       nx =   1            # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  c2-450      # minimum value of y-mesh points
+     ymax =  c2+200      # maximum value of y-mesh points
+       ny =   %qual%            # number of y-mes       h points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  c3-500     # minimum value of z-mesh points
+     zmax =  c3+500     # maximum value of z-mesh points
+       nz =   %qual%            # number of z-mesh points
+     axis =   yz            # axis of output
+     file = view_yz.out    # file name of output for the above axis
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     part = neutron 
+     unit =    1            # unit is [1/cm^2/source]
+    gshow =    1
+   epsout =    1
+
+[t-track] %switch%
+   mesh = xyz
+   x-type =    2            # x-mesh is linear given bx xmin, xmax and nx
+     xmin =  c24-200.00      # minimum value of x-mesh points
+     xmax =  c24+300.00     # maximum value of x-mesh points
+       nx =   %qual%            # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  c2-400      # minimum value of y-mesh points
+     ymax =  c2+200      # maximum value of y-mesh points
+       ny =   %qual%            # number of y-mesh points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  c3-300     # minimum value of z-mesh points
+     zmax =  c3+350     # maximum value of z-mesh points
+       nz =   1            # number of z-mesh points
+     axis =   yx            # axis of output
+     file = view_yx.out    # file name of output for the above axis
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     unit =    1            # unit is [1/cm^2/source]
+    gshow =    1
+   epsout =    1
+
+[t-track] %switch%
+   mesh = xyz
+   x-type =    2            # x-mesh is linear given bx xmin, xmax and nx
+     xmin =  c24-200      # minimum value of x-mesh points
+     xmax =  c24+300     # maximum value of x-mesh points
+       nx =   %qual%            # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  c2-50      # minimum value of y-mesh points
+     ymax =  c2+50      # maximum value of y-mes    h points
+       ny =   1            # number of y-mes       h points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  c3-600     # minimum value of z-mesh points
+     zmax =  c3+600     # maximum value of z-mesh points
+       nz =   %qual%            # number of z-mesh points
+     axis =   xz            # axis of output
+     file = view_xz.out    # file name of output for the above axis
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     part = neutron 
+     unit =    1            # unit is [1/cm^2/source]
+    gshow =    1
+   epsout =    1
+
+[t-track] %switch%
+   mesh = xyz
+   x-type =    2            # x-mesh is linear given bx xmin, xmax and nx
+     xmin =  -100      # minimum value of x-mesh points
+     xmax =  -4.12     # maximum value of x-mesh points
+       nx =   %qual%            # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  30.95-5.0      # minimum value of y-mesh points
+     ymax =  30.95+5.0      # maximum value of y-mes    h points
+       ny =   1            # number of y-mes       h points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  35.01-15.0     # minimum value of z-mesh points
+     zmax =  35.01+15.0     # maximum value of z-mesh points
+       nz =   %qual%            # number of z-mesh points
+     axis =   xz            # axis of output
+     file = view_xz_grid.out    # file name of output for the above axis
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     part = neutron 
+     unit =    1            # unit is [1/cm^2/source]
+    gshow =    1
+   epsout =    1
+
+
+[t-track] %switch%
+    title = Energy spectrum of neutrons in the tumor.
+     mesh = reg
+      reg = 210
+     unit = 2               # unit is [1/source] 
+     axis = eng             # axis of output
+   e-type = 2               # e-mesh is given by the below data
+       ne = 1000             # number of e-mesh points
+     emin = 0
+     emax = 14.0
+     file = tumor_spectrum.out  
+     part = neutron          
+    gshow = 1
+   epsout = 1
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$DETECTOR SPECTRA
+
+[ T - D e p o s i t ] $detector TR1
+    title = Raw Energy Deposition (Smearing in Python)
+     mesh =    reg
+      reg =    230
+     unit =    3
+   letmat =    0
+  dedxfnc =    1
+ material =    all
+   output =    deposit
+   e-type =    2
+     emin =    0.00000
+     emax =    2.50000
+       ne =    1000
+     axis =    eng
+     file =    detector_raw_tr1.out
+     part =    all
+    y-txt =    Counts [1/source]
+   epsout =    1
+   dresol =    -1.0          # (D=0) ; width = sqrt(dresol**2 + dfano*E); https://www.berkeleynucleonics.com/lanthanum-bromide/ resolution = 3% 
+
+[ T - D e p o s i t ] %switch4% $detector TR3
+    title = Raw Energy Deposition (Smearing in Python)
+     mesh =    reg
+      reg =    238
+     unit =    3
+   letmat =    0
+  dedxfnc =    1
+ material =    all
+   output =    deposit
+   e-type =    2
+     emin =    0.00000
+     emax =    2.50000
+       ne =    1000
+     axis =    eng
+     file =    detector_raw_tr3.out
+     part =    all
+    y-txt =    Counts [1/source]
+   epsout =    1
+   dresol =    -1.0          # (D=0) ; width = sqrt(dresol**2 + dfano*E); https://www.berkeleynucleonics.com/lanthanum-bromide/ resolution = 3% 
+
+
+[ T - D e p o s i t ] %switch4% $detector TR5
+    title = Raw Energy Deposition (Smearing in Python)
+     mesh =    reg
+      reg =    244
+     unit =    3
+   letmat =    0
+  dedxfnc =    1
+ material =    all
+   output =    deposit
+   e-type =    2
+     emin =    0.00000
+     emax =    2.50000
+       ne =    1000
+     axis =    eng
+     file =    detector_raw_tr5.out
+     part =    all
+    y-txt =    Counts [1/source]
+   epsout =    1
+   dresol =    -1.0          # (D=0) ; width = sqrt(dresol**2 + dfano*E); https://www.berkeleynucleonics.com/lanthanum-bromide/ resolution = 3% 
+
+[ T - D e p o s i t ] %switch4% $detector TR7
+    title = Raw Energy Deposition (Smearing in Python)
+     mesh =    reg
+      reg =    248
+     unit =    3
+   letmat =    0
+  dedxfnc =    1
+ material =    all
+   output =    deposit
+   e-type =    2
+     emin =    0.00000
+     emax =    2.50000
+       ne =    1000
+     axis =    eng
+     file =    detector_raw_tr7.out
+     part =    all
+    y-txt =    Counts [1/source]
+   epsout =    1
+   dresol =    -1.0          # (D=0) ; width = sqrt(dresol**2 + dfano*E); https://www.berkeleynucleonics.com/lanthanum-bromide/ resolution = 3% 
+
+
+[ T - D e p o s i t ] %switch4% $detector TR9
+    title = Raw Energy Deposition (Smearing in Python)
+     mesh =    reg
+      reg =    252
+     unit =    3
+   letmat =    0
+  dedxfnc =    1
+ material =    all
+   output =    deposit
+   e-type =    2
+     emin =    0.00000
+     emax =    2.50000
+       ne =    1000
+     axis =    eng
+     file =    detector_raw_tr9.out
+     part =    all
+    y-txt =    Counts [1/source]
+   epsout =    1
+   dresol =    -1.0          # (D=0) ; width = sqrt(dresol**2 + dfano*E); https://www.berkeleynucleonics.com/lanthanum-bromide/ resolution = 3% 
+
+
+[ T - D e p o s i t ] %switch4% $detector TR11
+    title = Raw Energy Deposition (Smearing in Python)
+     mesh =    reg
+      reg =    256
+     unit =    3
+   letmat =    0
+  dedxfnc =    1
+ material =    all
+   output =    deposit
+   e-type =    2
+     emin =    0.00000
+     emax =    2.50000
+       ne =    1000
+     axis =    eng
+     file =    detector_raw_tr11.out
+     part =    all
+    y-txt =    Counts [1/source]
+   epsout =    1
+   dresol =    -1.0          # (D=0) ; width = sqrt(dresol**2 + dfano*E); https://www.berkeleynucleonics.com/lanthanum-bromide/ resolution = 3% 
+
+
+
+
+
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$T-VOLUME
+
+[t-volume] %switch3%
+     mesh =  reg
+      reg =  101 110 400 501 520 522 549 550 201 203 204 206 211 213 215 217 219 228 229 230 231 234 235 238 239 242 243 244 245 246 247 210 
+     file =  volume_all.out
+   s-type =  2
+       x0 = -160.00           # (D=0.0) center position of x-axis [cm]
+       x1 =  230.00
+       y0 = -367.00           # (D=0.0) center position of y-axis [cm]
+       y1 =  200.00           # minimum position of z-axis [cm] 
+       z0 = -452.00
+       z1 =  454.00
+
+[ T-4Dtrack ] off
+    file = 4Dtrack.out $ Output trajectory file name for PHIG-3D 
+    HistoryMax = 100 $ Record up to 10 particle histories 
+$    SkipRate = 0.01 $ Skip 99% of track points to reduce file size (1% sampled) 
+    stepminEM = 0.1 $ Minimum step length (cm) for e-, e+, and photons verbose = 1 $ Level 1: include particle
+
+
+[ E n d ]
