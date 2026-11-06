@@ -1,0 +1,387 @@
+set: %switch%[off]
+$angle measurement 
+
+set: %switch1%[on]
+$t-tracks
+
+set: %switch2%[on]
+$transport of photons between structures
+
+set: %switch3%[off]
+$transport of photons between structures
+
+[ Title ]
+Detector with voxelised SIPM
+
+[ Parameters ]
+ icntl    =           8     $ (D=0) 3:ECH 5:NOR 6:SRC 7,8:GSH 11:DSH 12:DUMP
+ maxcas   =         200000     $ (D=10) number of particles per one batch
+ maxbch   =         34     $ (D=10) number of batches
+ itall    =           1     
+ e-mode   =           2     $ forces PHITS to track individual particle interaction events and explicit energy deposition steps, which is necessary for calculating scintillation yield and detector response functions
+ negs     =           1     $turns on the EGS5 physics engine to explicitly transport electrons, positrons, and photons down to low energies
+ nedisp   =           1     $ Considers energy straggling for heavy charged particles
+ nspred   =           2     $Considers angular straggling for heavy charged particles (protons/ions)
+
+
+[ Source ]
+   s-type =   1             $ mono-energetic axial source
+     proj =   photon         $ kind of incident particle         
+      dir =   1.0          $ z-direction of beam [cosine]
+       r0 =   0.1            $ radius [cm]
+	   x0 =   0.
+	   y0 =   0.
+       z0 =   -16.5            $ minimum position of z-axis [cm]
+       z1 =   -16.51            $ maximum position of z-axis [cm]
+       e0 =   0.485
+
+
+[ Material ]
+mat[1]    
+         H         -0.111898
+         O         -0.888102
+mat[2]                                                      $Lanthanum (III) bromide                                                 
+         57138      0.25
+         35079      0.75
+
+mat[3]                                                      $Aluminium coverage                                                 
+         Al      -1.0
+mat[4]   
+         6000 -0.000124                                     $air 
+         7014 -0.755268  
+         8016 -0.231781  
+         18000 -0.012827 
+mat[5]                                                      $Aluminium coverage                                                 
+         Si      -1.0
+
+[ Mat Name Color ]
+    mat   name      color
+    1     Water     blue
+    2     LaBr      yellow
+    3     Aluminium gray
+    4     Air       cyan
+    5     Silicone  pastelyellow
+
+
+[ Surface ]
+set:  c23[0.0] c24[0.0] c25[-15.0] c26[2.56] c27[2*c26] c28[0.5] c29[c26+c28] c30[c25-c28] c31[c27+2*c28]     
+set:  c21[c25+c27] c22[0.5] c201[10] c202[0.64]
+ 999  so     100.
+ 10   rcc    c24 c23 c25 0.0 0.0 c27 c26                         $ detector - crystal
+ 11   rcc    c24 c23 c30 0.0 0.0 c31 c29                         $ detector - aluminium
+ 12   rpp    c24-c26 c24+c26 c23-c26 c23+c26 c21 c21+c22         $ detector - silicon
+ 13   rpp    c24 c24+c202 c23 c23+c202 c21 c21+c22         $ detector - silicon
+
+
+[ Cell ]
+ 100     2 -5.06     -10 #103 $crystal
+ 101     3 -2.71     -11 10 12 #103 $aluminum
+ 103     0           -12 fill = 20 $silicone
+1000     4 -0.001205 -999 10 11 #103 $air
+1001    -1            999 
+
+$Universe 20
+260      0           -13 lat=1 u=20
+        fill = -4:4 -4:4 0:0
+        
+        1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1
+        1 1 1 1 1 1 1 1 1
+
+$Voxel universe
+261      5  -2.33    -999 u=1 
+
+[ Light ] 
+yield-factor = 0.001
+transport = 1
+
+$REGION DEFINITONS
+set-region
+  reg = 103 $silicon
+  n = 6
+  absorption-length = 1.0E-5 
+
+set-region
+  reg = 101 $aluminum
+  n = 6
+  n = 1.0 
+  absorption-length = 1.0E-5 $in cm
+
+set-region
+  reg = 100 $crystal
+  n = 2.285
+  absorption-length = 13 $in cm
+  decay-time = 25 $in ns
+  light-yield = 63000 $[photons/MeV]https://luxiumsolutions.com/radiation-detection-scintillators/crystal-scintillators/lanthanum-bromide-labr3
+  table-scintillation-spectrum
+    unit1 = nm 
+    351 0.0
+    370 0.8
+    380 1.0
+    410 0.4
+    450 0.0
+  end-table
+
+set-region 
+  reg = 1000 $air
+  n = 1.0 
+  absorption-length = 1.0E+5 $in cm
+
+$BOUNDARIES DEFINITIONS
+set-boundary
+    reg1 = 100
+    reg2 = 101
+    fraction-absorption = 0.05
+    fraction-perfect-specular = 1.0 
+    fraction-diffuse = 0.0 $5 absorbed, 95 reflected
+
+[ T-Product ] %switch%
+    title = Angle of light production in r-z mesh
+     mesh =  r-z            # mesh type is xyz scoring mesh
+   r-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     rmin =    0.00000      # minimum value of r-mesh points
+     rmax =    c26      # maximum value of r-mesh points
+       nr =   1           # number of r-mesh points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  -15.000000      # minimum value of z-mesh points
+     zmax =  -14.99      # maximum value of z-mesh points
+       nz =   1            # number of z-mesh points
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+            0.  1.
+   a-type = 2 $the angles are given in deg
+     amin = -1.0
+     amax = 1.0
+       na = 100
+ material =  all            # (D=all) number of specific material
+   mother =  all            # (D=all) number of specific mother
+     unit =   1            # unit is [1/source]
+     axis =   cos            # axis of output
+     file = light_angle.out  # file name of output for the above axis
+   output = 3010         # (D=nuclear) products from all reactions
+     part =  light      
+    angel = ymin(0.0) ymax(1.0) ylin
+    epsout = 1
+
+[ T-Track ] %switch1%
+     mesh =  xyz            $ mesh type is xyz scoring mesh
+   x-type =    2            $ x-mesh is linear given by xmin, xmax and nx
+       nx =  200            $ number of x-mesh points
+     xmin =  -20.           $ minimum value of x-mesh points
+     xmax =   20.           $ maximum value of x-mesh points
+   y-type =    1            $ y-mesh is given by the below data
+       ny =    1            $ number of y-mesh points
+           -5.0  5.0
+   z-type =    2            $ z-mesh is linear given by zmin, zmax and nz
+       nz =  200            $ number of z-mesh points
+     zmin =  -20.           $ minimum value of z-mesh points
+     zmax =   20.           $ maximum value of z-mesh points
+     part =  photon light      
+   e-type =    1            $ e-mesh is given by the below data
+       ne =    1            $ number of e-mesh points
+            0.0  1000.0
+     unit =    1            $ unit is [1/cm^2/source]
+     axis =   xz            $ axis of output
+     file = track_xz.out  $ file name of output for the above axis
+    title = Track detection 
+    gshow =    3            $ 0: no 1:bnd, 2:bnd+mat, 3:bnd+reg 4:bnd+lat
+   epsout =    1            $ (D=0) generate eps file by ANGEL
+
+[ T-Track ] %switch1%
+     mesh =  xyz            $ mesh type is xyz scoring mesh
+   x-type =    2            $ x-mesh is linear given by xmin, xmax and nx
+       nx =  200            $ number of x-mesh points
+     xmin =  -5.           $ minimum value of x-mesh points
+     xmax =   5.           $ maximum value of x-mesh points
+   y-type =    1            $ y-mesh is given by the below data
+       ny =    1            $ number of y-mesh points
+           -5.0  5.0
+   z-type =    2            $ z-mesh is linear given by zmin, zmax and nz
+       nz =  200            $ number of z-mesh points
+     zmin =  -16.           $ minimum value of z-mesh points
+     zmax =   -8.           $ maximum value of z-mesh points
+     part =  photon light      
+   e-type =    1            $ e-mesh is given by the below data
+       ne =    1            $ number of e-mesh points
+            0.0  1000.0
+     unit =    1            $ unit is [1/cm^2/source]
+     axis =   xz            $ axis of output
+     file = detector_xz.out  $ file name of output for the above axis
+    title = Track detection 
+    gshow =    4            $ 0: no 1:bnd, 2:bnd+mat, 3:bnd+reg 4:bnd+lat
+   epsout =    1            $ (D=0) generate eps file by ANGEL
+
+[ T-Track ] %switch1%
+     mesh =  xyz            $ mesh type is xyz scoring mesh
+   x-type =    2            $ x-mesh is linear given by xmin, xmax and nx
+       nx =  200            $ number of x-mesh points
+     xmin =  -5.           $ minimum value of x-mesh points
+     xmax =   5.           $ maximum value of x-mesh points
+   y-type =    2           $ y-mesh is given by the below data
+       ny =   200            $ number of y-mesh points
+     ymin =  -5.0
+     ymax =  5.0
+   z-type =    2            $ z-mesh is linear given by zmin, zmax and nz
+       nz =  1            $ number of z-mesh points
+     zmin =  -9.9           $ minimum value of z-mesh points
+     zmax =   -9.5           $ maximum value of z-mesh points
+     part =  photon light      
+   e-type =    1            $ e-mesh is given by the below data
+       ne =    1            $ number of e-mesh points
+            0.0  1000.0
+     unit =    1            $ unit is [1/cm^2/source]
+     axis =   xy            $ axis of output
+     file = detector_xy.out  $ file name of output for the above axis
+    title = Track detection 
+    gshow =    4            $ 0: no 1:bnd, 2:bnd+mat, 3:bnd+reg 4:bnd+lat
+   epsout =    1            $ (D=0) generate eps file by ANGEL
+
+
+[ T-Track ] %switch1%
+    title = Light-flux distribution in r-z mesh 
+     mesh =  r-z            $ mesh type is xyz scoring mesh
+   r-type =    2
+       nr =   100
+    rmin  =   0.0
+    rmax  =   2.56
+   z-type =    2            $ z-mesh is linear given by zmin, zmax and nz
+       nz =    1            $ number of z-mesh points
+     zmin =  -9.89           $ minimum value of z-mesh points
+     zmax =  -9.88           $ maximum value of z-mesh points
+     part =  light      
+   e-type =    1            $ e-mesh is given by the below data
+       ne =    1            $ number of e-mesh points
+            0.0  1000.0  
+     unit =    1            $ unit is [1/cm^2/source]
+     axis =   r           $ axis of output
+     file = track_rz.out  $ file name of output for the above axis
+    gshow =    3            $ 0: no 1:bnd, 2:bnd+mat, 3:bnd+reg 4:bnd+lat
+   epsout =    1            $ (D=0) generate eps file by ANGEL
+
+$ T-Crosses
+
+[ T - C r o s s ] off
+    title = Flux crossing from air to casing
+     mesh =  reg            # mesh type is region-wise
+      reg =    1            # number of crossing regions
+      non     r-from  r-to       area
+        1     1000    101      45.0    
+   e-type =    2            # e-mesh is linear given by emin, emax and ne
+     emin =   1.0E-9           # minimum value of e-mesh points
+     emax =   2.5          # maximum value of e-mesh points
+       ne =   1000            # number of e-mesh points
+     unit =    1            # unit is [1/cm^2/source]
+     axis =  eng            # axis of output
+     file = cross_air_al.out   # file name of output for the above axis
+   output = flux            # surface crossing flux
+     part =  photon   
+   epsout =    1            # (D=0) generate eps file by ANGEL
+   
+
+[ T-Cross ] %switch2%
+    title = Energy distribution in region mesh
+     mesh =  reg            # mesh type is region-wise
+      reg =    1            # number of crossing regions
+      non     r-from  r-to       area
+        1     100     101      45.0    
+    e-type =    2            # e-mesh is linear given by emin, emax and ne
+    e-unit = nm
+     emin =   100          # minimum value of e-mesh points
+     emax =   900          # maximum value of e-mesh points
+       ne =   100            # number of e-mesh points           
+     unit =    1            # unit is [1/cm^2/source]
+     axis =  eng            # axis of output
+     file = cross_al_crytal.out   # file name of output for the above axis
+   output = current            # surface crossing flux
+     part =  light   
+   epsout =    1            # (D=0) generate eps file by ANGEL
+
+[ T-Cross ]
+    title = Energy distribution in region mesh
+     mesh =  reg            # mesh type is region-wise
+      reg =    1            # number of crossing regions
+      non     r-from  r-to       area
+        1     100     103        1.0       
+    e-type =    2            # e-mesh is linear given by emin, emax and ne
+    e-unit = nm
+     emin =   100          # minimum value of e-mesh points
+     emax =   900          # maximum value of e-mesh points
+       ne =   100            # number of e-mesh points            
+     unit =    1            # unit is [1/cm^2/source]
+     axis =  eng            # axis of output
+     file = cross_crystal_SIPM.out   # file name of output for the above axis
+   output = current            # surface crossing flux
+     part =  light   
+   epsout =    1            # (D=0) generate eps file by ANGEL
+
+
+
+[ T-Product ] %switch3%
+    title = Particle production in r-z mesh
+     mesh =  reg            # mesh type is xyz scoring mesh
+      reg = 100
+   e-type =    2            # e-mesh is linear given by emin, emax and ne
+    e-unit = nm
+     emin =   100          # minimum value of e-mesh points
+     emax =   900          # maximum value of e-mesh points
+       ne =   100            # number of e-mesh points material =  all            # (D=all) number of specific material
+   mother =  all            # (D=all) number of specific mother
+     unit =   1            # unit is [1/source]
+     axis =   eng            # axis of output
+     file = light_scintillator.out  # file name of output for the above axis
+   output = 3010         # (D=nuclear) products from all reactions
+     part =  light      
+   epsout =    1            # (D=0) generate eps file by ANGEL
+
+[ T-Product ] %switch3%
+    title = Particle production in r-z mesh
+     mesh =  reg            # mesh type is xyz scoring mesh
+      reg = 100
+   t-type = 2
+     tmin = 0
+     tmax = 500
+       nt = 100
+   e-type =    2            # e-mesh is linear given by emin, emax and ne
+    e-unit = nm
+     emin =   100          # minimum value of e-mesh points
+     emax =   900          # maximum value of e-mesh points
+       ne =   1            # number of e-mesh points material =  all            # (D=all) number of specific material
+     unit =   1            # unit is [1/source]
+     axis =   t            # axis of output
+     file = light_scintillator_time.out  # file name of output for the above axis
+   output = 3010         # (D=nuclear) products from all reactions
+     part =  light      
+   epsout =    1            # (D=0) generate eps file by ANGEL
+
+[ T-Track ] %switch3%
+    title = Particle production in r-z mesh
+     mesh =  reg            # mesh type is xyz scoring mesh
+      reg = 100
+   t-type = 2
+     tmin = 0
+     tmax = 30
+       nt = 100
+   e-type =    2            # e-mesh is linear given by emin, emax and ne
+     emin =   0          # minimum value of e-mesh points
+     emax =   2.5          # maximum value of e-mesh points
+       ne =   1            # number of e-mesh points material =  all            # (D=all) number of specific material
+     unit =   1            # unit is [1/source]
+     axis =   t            # axis of output
+     file = photon_scintillator_time.out  # file name of output for the above axis
+     part =  photon   
+   epsout =    1            # (D=0) generate eps file by ANGEL
+
+[ T-4Dtrack ]  %switch3%
+    file = 4Dtrack.out $ Output trajectory file name for PHIG-3D 
+    HistoryMax = 100 $ Record up to 10 particle histories 
+$    SkipRate = 0.01 $ Skip 99% of track points to reduce file size (1% sampled) 
+    stepminEM = 0.1 $ Minimum step length (cm) for e-, e+, and photons verbose = 1 $ Level 1: include particle
+
+[ End ]
+
