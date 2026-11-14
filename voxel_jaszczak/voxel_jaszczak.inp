@@ -1,0 +1,505 @@
+set: %qual%[200]
+$the switch turns "on" or "off" t-tracks for flux analysis 
+set: %switch%[on]
+$ GRAPHIC OUTPUT
+set: %switch2%[off]
+$ GRAPHIC OUTPUT
+set: %switch3%[off]
+$ GRAPHIC OUTPUT
+set: %switch4%[off]
+
+ [ T i t l e ]  
+Voxelised Jaszczak
+
+[ P a r a m e t e r s ]
+ icntl    =           8    # (D=0) 3:ECH 5:NOR 6:SRC 7,8:Check geometry 11:DSH 12:DUMP
+ maxcas   =           50000   # (D=10) number of particles per one batch 20000 
+ maxbch   =           800     # (D=10) number of batches 100 
+ itall    =           1     
+  negs    =           1
+ e-mode   =           2     # 0: sampling mode; 1: adds evaporation;  2: adds also accurate charged particle yields and accurate neutron  energy distribution
+
+ $ istdev = -1 #execute PHITS in restart calculation mode
+set: c41[-1.3] c42[ 8.7] c43[-342.] c44[-341.] c45[292.8] c46[302.8] c47[10] c48[10] c49[1] c50[0]
+set: c1[-35] c2[-33.0] c3[35.01] c4[19.24] c5[11.2] c6[0.32] c7[c2+c6] c8[c4-2*c6] c9[c5-c6] c10[8.8] c11[c7+c10] c12[0.32] c13[c7+c10+c6] c14[c8-c10-c12] c15[12.7] c16[7.0] c18[c7+c15]  
+set: c19[0.01] c20[9.88] c21[c7+c19] c22[c10+c12-0.1] c23[35.0] c24[-20.0] c25[13.0] c26[2.56] c27[2*c26] c28[0.5] c29[c26+c28] c30[c25-c28] c31[c27+2*c28] c33[1.0] c34[-5.8] c35[0.0] 
+set: c36[-13.0] c37[2.0] c38[0.09] c39[c21+c38] c40[c22-2*c38] c51[3.] c52[c30-c51] c53[c31+2*c51] c54[c29+c51]
+
+$ new description of parameters is pending
+
+$THE PROGRAM STOPS READNG LINES AT COL. 200
+[ S o u r c e ]
+   s-type =   1               # mono-energetic axial source
+       z0 =   35.01           # minimum position of z-axis [cm]
+       z1 =   35.01           # maximum position of z-axis [cm]
+	   x0 =   -4.12
+	   y0 =   30.95
+       r0 =   0.           # radius [cm]
+       dir =   all           #D:1.0 z-direction of beam [cosine] all
+       e0 =   14.0          # energy of beam [MeV/u]
+     proj =  neutron            # kind of incident nucleus
+
+[ M a t e r i a l ]
+$ Stal 7.9 g/cm3
+mat[1]    24000 -0.190 $ Cr 
+          25055 -0.020 $ Mn 
+          26000 -0.695 $ Fe 
+          28000 -0.095 $ Ni
+mat[2]    H 2 O 1  
+mat[3]   6000 -0.000124 $ C 
+         7014 -0.755268 $ N 
+         8016 -0.231781 $ O 
+         18000 -0.012827 $ Ar
+
+mat[4]   1001 -0.148605 $paraffin
+         6012 -0.851395
+
+mat[5]   1001 -0.022100 $concrete
+         6012 -0.002484 
+         8016 -0.574930 
+         11023 -0.015208 
+         12000 -0.001266 
+         13027 -0.019953 
+         14000 -0.304627 
+         19000 -0.010045 
+         20000 -0.042951 
+         26000 -0.006435
+mat[6]   1002  2.        $Heavy Water
+         8016  1.
+mat[7]   74000 -1.000000 $ Tungsten density=19.3
+mat[8]   42000 -1.000000 $ Mo density=10.2
+mat[9]   13027 -1.000000 $ Al desity=2.6989
+mat[10]  3000 -0.267585  $LiF density=2.635
+         9000 -0.732415
+mat[11]  1001 -0.117     $ Borated PE 5 percent SWX-201, density 1.08 (0.930)
+         5010 -0.040000
+         5011 -0.010000
+         6000 -0.833	
+mat[12]	 12000 -0.010000 $Stop aluminium 6061-O, 2.7 g/cm3
+		 13027 -0.972000
+		 14000 -0.006000
+		 22000 -0.000880
+		 24000 -0.001950
+		 25055 -0.000880
+		 26000 -0.004090
+		 29000 -0.002750
+		 30000 -0.001460
+$ Cd, 8.65 g/cm3		 
+mat[13]	 48000 -1.000000 
+$ Led gestosc 11.35		 
+mat[14]  82000 -1.000000
+$ Wata mineralna 0.12 g/cm3 (sklad sredni z literatury a nie dokladny)
+mat[15]
+	O   -0.412
+    Si  -0.138
+    Ca  -0.093
+    Al  -0.092
+    Mg  -0.058
+    Fe  -0.046
+    Na  -0.010
+    K   -0.006
+    Ti  -0.007
+    P   -0.001
+    S   -0.002
+mat[22]                                                      $Water
+            H         -0.111898
+            O         -0.888102
+mat[23]                                                      $PMMA
+            H         -0.080541
+            O         -0.599846
+            C         -0.319613
+mat[24]                                                      $boron -2.460 
+            H         -0.11186
+            O         -0.88800
+            B         -0.000050
+            Na        -0.000102
+mat[25]                                                      $Lanthanum (III) bromide                                                 
+            57138      0.25
+            35079      0.75
+
+mat[26]                                                      $Aluminium coverage                                                 
+            Al      -1.0
+mat[27]                                                      $Aluminium coverage                                                 
+            Si      -1.0
+
+[ Mat Name Color ]
+    mat   name      color
+1  steel     red
+2  water     blue
+3  air       cyan 
+4  paraffin  yellow
+5  concrete  green
+6  deuter    black
+7  tungsten  brown
+8  molibden  darkgreen
+9  aluminium darkgreen
+10 LiF       red
+11 PE5       darkred
+12 Al6061-O  gray
+13 Cadmium   yellow
+14 Mercury   black
+15 Cotton    white
+22 Water     blue
+23 PMMA      yellow
+24 Isotope   violet
+25 LaBr      pastelcyan
+26 Al-Detect winered
+27 Silicon   darkgreen
+
+set: c100[0.5] c202[0.64]
+$fajnie byloby c* uporzdkowac 1/10
+
+[ S u r f a c e ]
+  10  rpp   -160. 230. -367. 200. -452. 454.
+ 102  rcc   c2 -c1 c3 c4 0.00 0.00 c5                                     $base_cylider_outer
+ 103  rcc   c7 -c1 c3 c8 0.00 0.00 c9                                     $base_cylider_inner 
+ 255  rcc   c24 c23 c25 0.0 0.0 c27 c26                                   $ detector - lithium
+ 256  rcc   c24 c23 c30 0.0 0.0 c31 c29                                   $ detector - LaBr3
+ 262 1  rpp c24-c26 c24+c26 c23-c26 c23+c26 c30 c30+0.5                   $ detector - silicon
+ 257  PX    c36                                                           $ source
+ 258  C/X   c18 0.0 c37                                                   $ source cut out
+$ voxels
+ 101  rpp   c7-c100 c7+c100 -c1-c100 -c1+c100 c3-c100 c3+c100
+ 263 1  rpp c24 c24+c202 c23 c23+c202 c30 c30+0.5                         $ detector - silicon - voxel
+
+[ C e l l ]
+$ Main spaces
+ 100   -1              10                          $void                                                                                                                                                                   $void
+ 101    3   -0.001205 -10 #203 #201 #230 #231 #232 $air
+ 201     23 -1.190     -102 #203                   $casing  
+ 203     0             -103 fill = 10              $filling       
+ 230     25 -5.06      -255 #232      trcl = 1     $detector - crystal
+ 231     26 -2.71       255 -256 #232 trcl = 1     $detector covering
+ 232     0             -262       fill = 20        $silicone container
+
+$ Voxel universes
+260      0           -263 lat=1 u=20 
+        fill = -4:3 -4:3 0:0
+
+        3 3 3 3 3 3 3 3
+        3 3 3 3 3 3 3 3
+        3 3 3 3 3 3 3 3
+        3 3 3 3 3 3 3 3
+        3 3 3 3 3 3 3 3
+        3 3 3 3 3 3 3 3
+        3 3 3 3 3 3 3 3
+        3 3 3 3 3 3 3 3
+
+ 301     0           -101 lat=1 u=10
+     fill = 0:19 -11:11 -11:11
+     infl:{lattice_3d.txt}
+
+$ Material universe
+ 261     27  -2.33       -10 u=3              $ Silicon voxel (Universe 1)
+ 302     22 -1.00        -10 u=1              $ Standard voxel (Universe 2)
+ 303     24 -1.00        -10 u=2              $ Boron-doped voxel (Universe 3)
+
+[ T r a n s f o r m ]
+*tr1  0.0 0.0 0.0  c2 -c1 c3  0 0.0 0 0.0 0 0.0 3
+
+
+[ V o l u m e ]
+    reg      vol      
+    201   3.5525E+02
+    203   2.9083E+03
+    230   7.4608E+01
+    231   1.0550E+02
+
+[ Light ] 
+$to avoid the particle weights error in any t-deposits this should actually be equal to 1
+$ although, i dont think this matters much
+yield-factor = 0.005
+transport = 1
+
+
+set-region
+  reg = 232 261             $ silicon
+  n = 6.0
+  absorption-length = 1.0E-5
+
+set-region
+  reg = 231             $ aluminum
+  n = 1.0 
+  absorption-length = 1.0E-5
+
+set-region
+  reg = 230             $ crystal
+  n = 2.285
+  absorption-length = 13.0
+  decay-time = 25.0
+  light-yield = 63000
+  table-scintillation-spectrum $AI generated basically, but based 
+    unit1 = nm 
+    351 0.0
+    370 0.8
+    380 1.0
+    410 0.4
+    450 0.0
+  end-table
+
+set-region 
+  reg = 101            $ air
+  n = 1.0 
+  absorption-length = 1.0E+5
+
+set-boundary           $ crystal -- air (not really necessary)
+  reg-from = 230 
+  reg-to   = 101
+  fraction-absorption = 0.05
+  fraction-diffuse = 1.0
+
+set-boundary           $crystal -- aluminum (an absorption rate to get rid of trapped photons)
+  reg1 = 230
+  reg2 = 231
+  fraction-absorption = 0.02
+  boundary-type = fresnel
+    
+set-boundary           $crystal -- SiMP (an absorption rate to get rid of trapped photons)
+  reg1 = 230
+  reg2 = 232 261
+  fraction-absorption = 0.02
+  boundary-type = fresnel
+
+
+$FLUENCE TRACKING
+[t-track] 
+   title = T-Track in the y-z plane (height is in x)
+   mesh = xyz
+   x-type =    2            # x-mesh is linear given bx xmin, xmax and nx
+     xmin =  c24-2.00      # minimum value of x-mesh points
+     xmax =  c24+2.00     # maximum value of x-mesh points
+       nx =   1            # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  -c1-30      # minimum value of y-mesh points
+     ymax =  -c1+30      # maximum value of y-mes    h points
+       ny =   %qual%            # number of y-mes       h points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  c3-30     # minimum value of z-mesh points
+     zmax =  c3+30     # maximum value of z-mesh points
+       nz =   %qual%            # number of z-mesh points
+     axis =   yz            # axis of output
+     file = view_yz.out    # file name of output for the above axis
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     part = neutron light photon
+     unit =    1            # unit is [1/cm^2/source]
+    gshow =    1
+    gslat =    1
+   epsout =    1
+
+
+[t-track] 
+    title = T-Track in the y-x plane (height is in x)
+   mesh = xyz
+   x-type =    2            # x-mesh is linear given bx xmin, xmax and nx
+     xmin =  c2-1.0      # minimum value of x-mesh points
+     xmax =  c2+20.00     # maximum value of x-mesh points
+       nx =   %qual%            # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  -c1-24.0      # minimum value of y-mesh points
+     ymax =  -c1+24.0      # maximum value of y-mesh points
+       ny =   %qual%            # number of y-mesh points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  c3     # minimum value of z-mesh points
+     zmax =  c3+.2     # maximum value of z-mesh points
+       nz =   1            # number of z-mesh points
+     axis =   xy             # axis of output
+     file = view_yx.out    # file name of output for the above axis
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     unit =    1            # unit is [1/cm^2/source]
+    gshow =    1            $ 0: no 1:bnd, 2:bnd+mat, 3:bnd+reg 4:bnd+lat
+    gslat =    1
+   epsout =    1
+     part = neutron light photon
+
+
+[t-track] 
+    title = T-Track in the y-x plane (height is in x)
+   mesh = xyz
+   x-type =    2            # x-mesh is linear given bx xmin, xmax and nx
+     xmin =  c24-4      # minimum value of x-mesh points
+     xmax =  c24+4     # maximum value of x-mesh points
+       nx =   %qual%            # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  c23-4      # minimum value of y-mesh points
+     ymax =  c23+4      # maximum value of y-mesh points
+       ny =   %qual%            # number of y-mesh points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  c30     # minimum value of z-mesh points
+     zmax =  c30+0.5     # maximum value of z-mesh points
+       nz =   1            # number of z-mesh points
+     axis =   xy             # axis of output
+     file = view_SiPM.out    # file name of output for the above axis
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     unit =    1            # unit is [1/cm^2/source]
+    gshow =    1            $ 0: no 1:bnd, 2:bnd+mat, 3:bnd+reg 4:bnd+lat
+    gslat =    1
+   epsout =    1
+     part = neutron light photon
+
+
+[t-track] %switch%
+    title = T-Track in the x-z plane (height is in x)
+   mesh = xyz
+   x-type =    2            # x-mesh is linear given bx xmin, xmax and nx
+     xmin =  c2-1.0      # minimum value of x-mesh points
+     xmax =  c2+20.00     # maximum value of x-mesh points
+       nx =   %qual%            # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  -c1-12.0      # minimum value of y-mesh points
+     ymax =  -c1+12.0      # maximum value of y-mesh points
+       ny =   1            # number of y-mes       h points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  c3-30     # minimum value of z-mesh points
+     zmax =  c3+30     # maximum value of z-mesh points
+       nz =   %qual%            # number of z-mesh points
+     axis =   xz            # axis of output
+     file = view_xz.out    # file name of output for the above axis
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     part = neutron light photon
+     unit =    1            # unit is [1/cm^2/source]
+    gshow =    1
+    gslat =    1
+   epsout =    1
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$DETECTOR SPECTRA
+$its been suggested that output = dose ignores particle weights, which could be maybe usefull
+[ T - D e p o s i t ] $detector TR1
+    title = Raw Energy Deposition (Smearing in Python)
+     mesh =    reg
+      reg =    230
+     unit =    3
+   letmat =    0
+  dedxfnc =    1
+ material =    all
+   output =    deposit
+   e-type =    2
+     emin =    0.00000
+     emax =    2.50000
+       ne =    1000
+     axis =    eng
+     file =    detector_raw_tr1.out
+     part =    all
+    y-txt =    Counts [1/source]
+   epsout =    1
+   dresol =    -1.0          # (D=0) ; width = sqrt(dresol**2 + dfano*E); https://www.berkeleynucleonics.com/lanthanum-bromide/ resolution = 3% 
+
+
+$$$$$$$$$$$$$$
+$the thing we've been all waiting for
+$results actually vary between (261<260[-4 -4 0]) and (261<260[-4 -4 0]<parental cell ID)
+[ T-Cross ]
+    title = Incoming optical photon current per SiPM pixel (8x8 Array)
+     mesh = reg
+      reg = 64
+      non   r-from   r-to                     area
+       1    230     (261<260[-4 -4 0])      0.4096
+       2    230     (261<260[-3 -4 0])      0.4096
+       3    230     (261<260[-2 -4 0])      0.4096
+       4    230     (261<260[-1 -4 0])      0.4096
+       5    230     (261<260[0 -4 0])       0.4096
+       6    230     (261<260[1 -4 0])       0.4096
+       7    230     (261<260[2 -4 0])       0.4096
+       8    230     (261<260[3 -4 0])       0.4096
+       9    230     (261<260[-4 -3 0])      0.4096
+      10    230     (261<260[-3 -3 0])      0.4096
+      11    230     (261<260[-2 -3 0])      0.4096
+      12    230     (261<260[-1 -3 0])      0.4096
+      13    230     (261<260[0 -3 0])       0.4096
+      14    230     (261<260[1 -3 0])       0.4096
+      15    230     (261<260[2 -3 0])       0.4096
+      16    230     (261<260[3 -3 0])       0.4096
+      17    230     (261<260[-4 -2 0])      0.4096
+      18    230     (261<260[-3 -2 0])      0.4096
+      19    230     (261<260[-2 -2 0])      0.4096
+      20    230     (261<260[-1 -2 0])      0.4096
+      21    230     (261<260[0 -2 0])       0.4096
+      22    230     (261<260[1 -2 0])       0.4096
+      23    230     (261<260[2 -2 0])       0.4096
+      24    230     (261<260[3 -2 0])       0.4096
+      25    230     (261<260[-4 -1 0])      0.4096
+      26    230     (261<260[-3 -1 0])      0.4096
+      27    230     (261<260[-2 -1 0])      0.4096
+      28    230     (261<260[-1 -1 0])      0.4096
+      29    230     (261<260[0 -1 0])       0.4096
+      30    230     (261<260[1 -1 0])       0.4096
+      31    230     (261<260[2 -1 0])       0.4096
+      32    230     (261<260[3 -1 0])       0.4096
+      33    230     (261<260[-4 0 0])       0.4096
+      34    230     (261<260[-3 0 0])       0.4096
+      35    230     (261<260[-2 0 0])       0.4096
+      36    230     (261<260[-1 0 0])       0.4096
+      37    230     (261<260[0 0 0])        0.4096
+      38    230     (261<260[1 0 0])        0.4096
+      39    230     (261<260[2 0 0])        0.4096
+      40    230     (261<260[3 0 0])        0.4096
+      41    230     (261<260[-4 1 0])       0.4096
+      42    230     (261<260[-3 1 0])       0.4096
+      43    230     (261<260[-2 1 0])       0.4096
+      44    230     (261<260[-1 1 0])       0.4096
+      45    230     (261<260[0 1 0])        0.4096
+      46    230     (261<260[1 1 0])        0.4096
+      47    230     (261<260[2 1 0])        0.4096
+      48    230     (261<260[3 1 0])        0.4096
+      49    230     (261<260[-4 2 0])       0.4096
+      50    230     (261<260[-3 2 0])       0.4096
+      51    230     (261<260[-2 2 0])       0.4096
+      52    230     (261<260[-1 2 0])       0.4096
+      53    230     (261<260[0 2 0])        0.4096
+      54    230     (261<260[1 2 0])        0.4096
+      55    230     (261<260[2 2 0])        0.4096
+      56    230     (261<260[3 2 0])        0.4096
+      57    230     (261<260[-4 3 0])       0.4096
+      58    230     (261<260[-3 3 0])       0.4096
+      59    230     (261<260[-2 3 0])       0.4096
+      60    230     (261<260[-1 3 0])       0.4096
+      61    230     (261<260[0 3 0])        0.4096
+      62    230     (261<260[1 3 0])        0.4096
+      63    230     (261<260[2 3 0])        0.4096
+      64    230     (261<260[3 3 0])        0.4096
+   e-type = 2
+   e-unit = nm
+     emin = 100
+     emax = 900
+       ne = 1
+     unit = 1
+     axis = reg
+     file = cross_sipm_pixels_8x8.out
+   output = f-curr
+     part = light
+   epsout = 1
+
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+$T-VOLUME
+
+[t-volume] %switch3%
+     mesh =  reg
+      reg =  101 110 400 501 520 522 549 550 201 203 204 206 211 213 215 217 219 228 229 230 231 234 235 238 239 242 243 244 245 246 247 210 
+     file =  volume_all.out
+   s-type =  2
+       x0 = -160.00           # (D=0.0) center position of x-axis [cm]
+       x1 =  230.00
+       y0 = -367.00           # (D=0.0) center position of y-axis [cm]
+       y1 =  200.00           # minimum position of z-axis [cm] 
+       z0 = -452.00
+       z1 =  454.00
+
+[ T-4Dtrack ] off
+    file = 4Dtrack.out $ Output trajectory file name for PHIG-3D 
+    HistoryMax = 100 $ Record up to 10 particle histories 
+$    SkipRate = 0.01 $ Skip 99% of track points to reduce file size (1% sampled) 
+    stepminEM = 0.1 $ Minimum step length (cm) for e-, e+, and photons verbose = 1 $ Level 1: include particle
+
+
+[ E n d ]
