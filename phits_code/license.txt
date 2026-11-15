@@ -1,0 +1,10 @@
+Copyright (c) 2026 
+
+Permission is granted to use, copy, modify, and redistribute
+these models, including commercially, provided that any use
+or redistribution credits this repository:
+
+https://github.com/nataliakata/BNCT_Monitoring_Project/tree/main
+
+This notice must be retained with redistributed copies.
+The models are provided "as is", without warranty.
